@@ -7,17 +7,17 @@
 
 Был создан абстрактный класс `Filter`, реализующий применение фильтра к изображению и содержащий:
 
-- Функцию `protected virtual void DoPreprocessing(FastBitmap bmp)`, выполняющую предварительные рассчеты перед проходом по изображению
+- Функцию `protected virtual void DoPreprocessing(FastBitmap bmp)`, выполняющую предварительные расчеты перед проходом по изображению
 - Функцию `protected abstract Color CalculateNewPixelColor(FastBitmap bmp, int x, int y)`, вызываемую в каждой точке изображения.
 
 Исходное изображение выглядело так:
 
-![](/saved_images/__unn.png)
+![](saved_images/__unn.png)
 
 На основе класса `Filter` были реализованы следующие точечные фильтры:
 
-- Инверсия цветов: ![](/saved_images/unn_inversion.png)
-- "Серый мир":![](/saved_images/unn_gray_world.png)
+- Инверсия цветов: ![](saved_images/unn_inversion.png)
+- "Серый мир":![](saved_images/unn_gray_world.png)
 - Идеальный отражатель: (без изображения. Не получилось найти подходящее)
 - Линейная коррекция: (без изображения. Не получилось найти подходящее)
 - Поворот на 45 градусов против часовой стрелки:
