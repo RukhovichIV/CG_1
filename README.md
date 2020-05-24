@@ -5,49 +5,60 @@
 
 Отчёт по лабораторной работе №1. Обработка изображений.
 
-Все примеры будут продемонстрированы на данном исходном изображении:
-<img src="saved_images/__unn.png" width="400px"> <img src="saved_images/__unn.png" width="400px">
-
 Был создан абстрактный класс `Filter`, реализующий применение фильтра к изображению и содержащий:
 
 - Функцию `protected virtual void DoPreprocessing(FastBitmap bmp)`, выполняющую предварительные расчеты перед проходом по изображению
 - Функцию `protected abstract Color CalculateNewPixelColor(FastBitmap bmp, int x, int y)`, вызываемую в каждой точке изображения.
 
-На основе этого класса были реализованы несколько точечных фильтров, а именно 
+На основе этого класса были реализованы несколько точечных фильтров, а именно
 
-Исходное изображение выглядело так:
+- Инверсия цветов:
+<img src="saved_images/__lena.png" width="400px"><img src="saved_images/lena_inversion.png" width="400px">
+- "Серый мир":
+<img src="saved_images/__lena.png" width="400px"><img src="saved_images/lena_gray_world.png" width="400px">
+- Линейная коррекция:
+<img src="saved_images/__lena.png" width="400px"><img src="saved_images/lena_linear_stretching.png" width="400px">
+- Поворот на 45 градусов против часовой стрелки:
+<img src="saved_images/__lena.png" width="400px"><img src="saved_images/lena_rotation.png" width="400px">
+- "Стекло":
+<img src="saved_images/__lena.png" width="400px"><img src="saved_images/lena_glass.png" width="400px">
+- Медианный фильтр. Для создания изображения берутся значения только из красного канала, для каждого пикселя берутся все значения в заданном радиусе и выбирается (за O(n)) медиана. Затем медианное значение записывается во все каналы:
+<img src="saved_images/__lena.png" width="400px"><img src="saved_images/lena_median.png" width="400px">
 
-![](saved_images/__unn.png)
+Также на основе класса `Filter` был реализован класс `MatrixFilter`, с возможностью задания матрицы (в конструкторе) для расчёта нового пикселя. Были реализованы следующие матричные фильтры:
 
-На основе класса `Filter` были реализованы следующие точечные фильтры:
+- Размытие:
+<img src="saved_images/__lena.png" width="400px"><img src="saved_images/lena_blur.png" width="400px">
+- Размытие по Гауссу:
+<img src="saved_images/__lena.png" width="400px"><img src="saved_images/lena_gaussian_blur.png" width="400px">
+- Тиснение (для более чёткой видимости к данной картинке применён фильтр линейного растяжения после тиснения):
+<img src="saved_images/__lena.png" width="400px"><img src="saved_images/lena_stamping_lin_str.png" width="400px">
+- Светящиеся края (выделение контуров + фильтр максимума; реализованы одним фильтром):
+<img src="saved_images/__lena.png" width="400px"><img src="saved_images/lena_glowing_edges.png" width="400px">
+- Медианный фильтр + светящиеся края. На изображении намного меньше шума, но теряются 2 других цветовых канала:
+<img src="saved_images/lena_median.png" width="400px"><img src="saved_images/lena_median_glowing_edges.png" width="400px">
 
-- Инверсия цветов: ![](saved_images/unn_inversion.png)
-- "Серый мир":![](saved_images/unn_gray_world.png)
-- Идеальный отражатель: (без изображения. Не получилось найти подходящее)
-- Линейная коррекция: (без изображения. Не получилось найти подходящее)
-- Поворот на 45 градусов против часовой стрелки:![](saved_images/unn_rotation.png)
-- "Стекло":![](saved_images/unn_glass.png)
-- Медианный фильтр:![](saved_images/unn_median.png)
+На основе класса `Filter` также реализован класс  `MorphologyFilter`, применяющий к изображению операции морфологии (наращивание, эрозию и их комбинации). Для этого сначала изображение приводится к бинарному с помощью такой команды `binaryImage[x, y] = col.R <= 127 && col.G <= 127 && col.B > 127`, затем выполняется операция морфологии и в результате выводится изображение, где белый цвет означает `false`, а синий - `true`. Тут структурный элемент - это прямоугольник $3 \times 3$:
 
-Также на основе класса `Filter` был реализован класс `MatrixFilter`, с возможностью задания матрицы для расчёта нового пикселя. Были реализованы следующие матричные фильтры:
+- Наращивание:
+<img src="saved_images/__unn.png" width="800px"><img src="saved_images/unn_morph_full_dilation.png" width="800px">
+- Эрозия:
+<img src="saved_images/__unn.png" width="800px"><img src="saved_images/unn_morph_full_erosion.png" width="800px">
+- Размыкание (эрозия + наращивание):
+<img src="saved_images/__unn.png" width="800px"><img src="saved_images/unn_morph_full_opening.png" width="800px">
+- Замыкание (наращивание + эрозия):
+<img src="saved_images/__unn.png" width="800px"><img src="saved_images/unn_morph_full_closure.png" width="800px">
+- Морфологический градиент:
+<img src="saved_images/__unn.png" width="800px"><img src="saved_images/unn_morph_full_gradient.png" width="800px">
 
-- Размытие:![](saved_images/unn_blur.png)
-- Размытие по Гауссу:![](saved_images/unn_gaussian_blur.png)
-- Тиснение:![](saved_images/unn_stamping.png)
-- Светящиеся края:![](saved_images/unn_glowing_edges.png)
+Также присутствует возможность выбрать структурный элемент для операций морфологии. Для этого необходимо подать на вход программе изображение в любом формате, высота и ширина которого не превышают 7 пикселей. Оно будет преобразовано к бинарному по следующему условию `structElement[x, y] = color.R == 0`. Лучше всего различия в структурном элементе видно при применении операции морфологического градиента:
 
-На основе класса `Filter` также реализован класс  `MorphologyFilter`, применяющий к изображению операции морфологии (наращивание, эрозию и их комбинации). Также присутствует возможность выбрать структурный элемент для операций морфологии (из графического изображения). Для следующих изображений использовался прямоугольник $3 \times 3$, полностью заполненный пикселями. Получились такие результаты:
+- Структурный элемент - прямоугольник $3 \times 3$, размеры фигуры -  $3 \times 3$:
+<img src="saved_images/__unn.png" width="800px"><img src="saved_images/unn_morph_full_gradient.png" width="800px">
+- Структурный элемент - прямоугольник $1 \times 3$, но размеры фигуры -  $3 \times 3$:
+<img src="saved_images/__unn.png" width="800px"><img src="saved_images/unn_morph_updown_gradient.png" width="800px">
+- Структурный элемент - прямоугольник $1 \times 2$ (центральный и нижний пиксели), но размеры фигуры -  $3 \times 3$:
+<img src="saved_images/__unn.png" width="800px"><img src="saved_images/unn_morph_down_gradient.png" width="800px">
 
-- Наращивание:![](saved_images/unn_morph_full_dilation.png)
-- Эрозия:![](saved_images/unn_morph_full_erosion.png)
-- Размыкание (эрозия + наращивание):![](saved_images/unn_morph_full_opening.png)
-- Замыкание (наращивание + эрозия):![](saved_images/unn_morph_full_closure.png)
-- Морфологический градиент (наращивание - эрозия):![](saved_images/unn_morph_full_gradient.png)
-- Морфологический градиент + замыкание:![](saved_images/unn_morph_full_gradient_closure.png)
-
-Лучше всего различия в структурном элементе видно на изображениях с градиентом:
-
-- Градиент при структурном, с закрашенным прямоугольником $1 \times 3$:![](saved_images/unn_morph_updown_gradient.png)
-- Градиент при структурном элементе с закрашенным прямоугольником $1 \times 2$ (центральный и нижний пиксели):![](saved_images/unn_morph_down_gradient.png)
-
-И, напоследок, картинка, получившаяся в результате экспериментов (фильтр светящихся границ, чередующийся с тиснением). Что-то похожее на неоновую вывеску:![](saved_images/unn_neon.png)
+И, напоследок, картинка, получившаяся в результате экспериментов (фильтр светящихся границ, чередующийся с тиснением). Что-то похожее на неоновую вывеску:
+<img src="saved_images/__unn.png" width="800px"><img src="saved_images/unn_neon.png" width="800px">
