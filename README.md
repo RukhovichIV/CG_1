@@ -6,7 +6,7 @@
 Отчёт по лабораторной работе №1. Обработка изображений.
 
 Все примеры будут продемонстрированы на данном исходном изображении:
-<img src="saved_images/__unn.png" width="500px"> <img src="saved_images/__unn.png" width="500px">
+<img src="saved_images/__unn.png" width="400px"> <img src="saved_images/__unn.png" width="400px">
 
 Был создан абстрактный класс `Filter`, реализующий применение фильтра к изображению и содержащий:
 
